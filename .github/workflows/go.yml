@@ -28,18 +28,21 @@ jobs:
         args: release --rm-dist
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    - name: Upload to bintray
-      env:
-        UPLOAD_BINTRAY_PASSWORD: ${{ secrets.UPLOAD_BINTRAY_PASSWORD }}
-        DISTRIBUTION: "trusty,xenial,bionic,buster,wheezy"
-        USERNAME: reddec
-        PROJECT: "tinc-boot"
-      run: |
-        for package in $(ls dist/*linux*.deb); do
-                  name=$(basename $package)
-                  component=$(echo $name | awk -F_  '{print $1}')
-                  arch=$(echo $package | sed s/.deb// | awk -F_  '{print $NF}')
-                  echo "component: $component; arch: $arch"
-                  curl -f -s -T "$package" -u "${USERNAME}:${UPLOAD_BINTRAY_PASSWORD}" "https://api.bintray.com/content/reddec/debian/${PROJECT}/${GITHUB_REF##*/}/${component}_${GITHUB_REF##*/}_${arch}.deb;publish=1;deb_component=main;deb_distribution=${DISTRIBUTION};deb_architecture=${arch}"
-        done
-        curl -X PATCH -f -s -H "Content-Type: application/json" -d  "{\"vcs_tag\" : \"${GITHUB_REF##*/}\", \"github_use_tag_release_notes\": true}" -u "${USERNAME}:${UPLOAD_BINTRAY_PASSWORD}" "https://api.bintray.com/packages/reddec/debian/${PROJECT}/versions/${GITHUB_REF##*/}"
+    - uses: actions/upload-artifact@v2
+      with:
+        path: dist
+#     - name: Upload to bintray
+#       env:
+#         UPLOAD_BINTRAY_PASSWORD: ${{ secrets.UPLOAD_BINTRAY_PASSWORD }}
+#         DISTRIBUTION: "trusty,xenial,bionic,buster,wheezy"
+#         USERNAME: reddec
+#         PROJECT: "tinc-boot"
+#       run: |
+#         for package in $(ls dist/*linux*.deb); do
+#                   name=$(basename $package)
+#                   component=$(echo $name | awk -F_  '{print $1}')
+#                   arch=$(echo $package | sed s/.deb// | awk -F_  '{print $NF}')
+#                   echo "component: $component; arch: $arch"
+#                   curl -f -s -T "$package" -u "${USERNAME}:${UPLOAD_BINTRAY_PASSWORD}" "https://api.bintray.com/content/reddec/debian/${PROJECT}/${GITHUB_REF##*/}/${component}_${GITHUB_REF##*/}_${arch}.deb;publish=1;deb_component=main;deb_distribution=${DISTRIBUTION};deb_architecture=${arch}"
+#         done
+#         curl -X PATCH -f -s -H "Content-Type: application/json" -d  "{\"vcs_tag\" : \"${GITHUB_REF##*/}\", \"github_use_tag_release_notes\": true}" -u "${USERNAME}:${UPLOAD_BINTRAY_PASSWORD}" "https://api.bintray.com/packages/reddec/debian/${PROJECT}/versions/${GITHUB_REF##*/}"
