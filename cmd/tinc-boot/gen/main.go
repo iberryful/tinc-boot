@@ -38,8 +38,8 @@ type Cmd struct {
 	NoBinCopy  bool          `long:"no-bin-copy" env:"NO_BIN_COPY" description:"Disable copy tinc-boot binary"`
 	NoGenKey   bool          `long:"no-gen-key" env:"NO_GEN_KEY" description:"Disable key generation"`
 	Port       int           `long:"port" env:"PORT" description:"Node port (first available will be got if not set)"`
-	ConnectTo  []string      `long:"connect-to" env:"CONNECT_TO" description:"Add ConnectTo instruction (recommended nodes to connect)"`
-	Public     []string      `short:"a" alias:"addr" long:"public" env:"PUBLIC" description:"Public addresses that could be used for incoming connections"`
+    ConnectTo  []string      `long:"connect-to" env:"CONNECT_TO" env-delim:"," description:"Add ConnectTo instruction (recommended nodes to connect)"`
+	Public     []string      `short:"a" alias:"addr" long:"public" env-delim:"," env:"PUBLIC" description:"Public addresses that could be used for incoming connections"`
 	Standalone bool          `long:"standalone" env:"STANDALONE" description:"Do not use bootnodes (usefull for very-very first initialization)"`
 	Args       struct {
 		URLs []string `description:"boot node urls"`
