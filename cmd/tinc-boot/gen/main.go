@@ -354,6 +354,7 @@ func (cmd *Cmd) requestBootnode(URL string, nounce []byte, encryptedPayload []by
 		return err
 	}
 	log.Println("bootnode is", nodeName)
+	decrypted = []byte("Address = " + u.Hostname() + "\n" + string(decrypted))
 
 	err = ioutil.WriteFile(filepath.Join(cmd.Hosts(), nodeName), decrypted, 0755)
 	if err != nil {
@@ -367,6 +368,5 @@ func (cmd *Cmd) requestBootnode(URL string, nounce []byte, encryptedPayload []by
 		return err
 	}
 	conf = []byte("ConnectTo = " + nodeName + "\n" + string(conf))
-	conf = []byte("Address = " + u.Host + "\n" + string(conf))
 	return ioutil.WriteFile(cmd.TincConf(), conf, 0755)
 }
