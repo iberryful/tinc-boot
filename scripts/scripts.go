@@ -12,7 +12,6 @@ const Extension = ""
 var TincUp = template.Must(template.New("").Parse(`#!/usr/bin/env bash
 ip addr add {{.Addr}}/{{.Mask}} dev $INTERFACE
 ip link set dev $INTERFACE up
-{{.Bin}} monitor &
 `))
 
 type TincUpParam struct {
@@ -28,7 +27,6 @@ func (cfg *TincUpParam) Render() ([]byte, error) {
 }
 
 var TincDown = template.Must(template.New("").Parse(`#!/usr/bin/env bash
-{{.Bin}} kill
 ip addr del {{.Addr}}/{{.Mask}} dev $INTERFACE
 ip link set dev $INTERFACE down
 `))
@@ -50,6 +48,7 @@ Name = {{.Name}}
 LocalDiscovery = yes
 Interface = {{.Net}}
 Port = {{.Port}}
+Mode = switch
 {{range .ConnectTo}}
 ConnectTo = {{.}}
 {{end}}

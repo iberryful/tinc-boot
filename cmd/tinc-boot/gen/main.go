@@ -19,6 +19,7 @@ import (
 	"math/rand"
 	"net"
 	"net/http"
+	"net/url"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -320,6 +321,10 @@ func (cmd *Cmd) requestBootnode(URL string, nounce []byte, encryptedPayload []by
 	if !strings.Contains(URL, "://") {
 		URL = "http://" + URL
 	}
+	u, err := url.Parse(URL)
+	if err != nil {
+		return err
+	}
 	nounceHex := hex.EncodeToString(nounce)
 	URL = URL + "/" + nounceHex + "/" + cmd.Name
 	req, err := http.NewRequest(http.MethodPost, URL, bytes.NewBuffer(encryptedPayload))
@@ -362,5 +367,6 @@ func (cmd *Cmd) requestBootnode(URL string, nounce []byte, encryptedPayload []by
 		return err
 	}
 	conf = []byte("ConnectTo = " + nodeName + "\n" + string(conf))
+	conf = []byte("Address = " + u.Host + "\n" + string(conf))
 	return ioutil.WriteFile(cmd.TincConf(), conf, 0755)
 }
